@@ -136,7 +136,6 @@ def load_image_from_base64(uri: str) -> np.ndarray:
     img_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     # img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
 
-
     height, width, _ = img_bgr.shape
     logger.debug(f"Image size: {humanize.naturalsize(len(decoded_bytes))} height: {height} width: {width}")
 
