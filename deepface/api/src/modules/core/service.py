@@ -114,6 +114,7 @@ def analyze(
         )
         result["results"] = demographies
         result["anti_spoofing"] = anti_spoofing
+        result["detector_backend"] = detector_backend
         return result
     except ValueError as verr:
         errRsp = {
