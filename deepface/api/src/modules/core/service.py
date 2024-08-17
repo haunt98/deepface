@@ -56,6 +56,7 @@ def verify(
             enforce_detection=enforce_detection,
             anti_spoofing=anti_spoofing,
         )
+        obj["anti_spoofing"] = anti_spoofing
         return obj
     except ValueError as verr:
         errRsp = {
@@ -63,6 +64,7 @@ def verify(
             "model_name": model_name,
             "detector_backend": detector_backend,
             "distance_metric": distance_metric,
+            "anti_spoofing": anti_spoofing,
         }
         if str(verr).startswith("Face could not be detected in img1_path"):
             errRsp["error_vi"] = "Không phát hiện được khuôn mặt trong ảnh 1"
@@ -111,11 +113,13 @@ def analyze(
             anti_spoofing=anti_spoofing,
         )
         result["results"] = demographies
+        result["anti_spoofing"] = anti_spoofing
         return result
     except ValueError as verr:
         errRsp = {
             "error": f"Exception while verifying: {str(verr)}",
             "detector_backend": detector_backend,
+            "anti_spoofing": anti_spoofing,
         }
         if str(verr).startswith("Face could not be detected"):
             errRsp["error_vi"] = "Không phát hiện được khuôn mặt"
