@@ -12,6 +12,11 @@ import numpy as np
 import cv2
 from PIL import Image
 
+import humanize
+
+from deepface.commons.logger import Logger
+
+logger = Logger()
 
 def list_images(path: str) -> List[str]:
     """
@@ -130,6 +135,11 @@ def load_image_from_base64(uri: str) -> np.ndarray:
     nparr = np.fromstring(decoded_bytes, np.uint8)
     img_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     # img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+
+
+    height, width, _ = img_bgr.shape
+    logger.debug(f"Image size: {humanize.naturalsize(len(decoded_bytes))} height: {height} width: {width}")
+
     return img_bgr
 
 
