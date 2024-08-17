@@ -176,11 +176,11 @@ def verify(
                 )
             except ValueError as err:
                 if str(err).startswith("Face could not be detected"):
-                    raise ValueError("Face could not be detected in img{index}_path") from err
+                    raise ValueError(f"Face could not be detected in img{index}_path") from err
                 elif str(err).startswith("Multiple faces are detected"):
-                    raise ValueError("Multiple faces are detected in img{index}_path") from err
+                    raise ValueError(f"Multiple faces are detected in img{index}_path") from err
                 elif str(err).startswith("Spoof detected in given image"):
-                    raise ValueError("Spoof detected in img{index}_path") from err
+                    raise ValueError(f"Spoof detected in img{index}_path") from err
                 else:
                     raise ValueError(f"Exception while processing img{index}_path") from err
         return img_embeddings, img_facial_areas
