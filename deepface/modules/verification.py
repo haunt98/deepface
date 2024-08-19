@@ -175,7 +175,14 @@ def verify(
                     anti_spoofing=anti_spoofing,
                 )
             except ValueError as err:
-                raise ValueError(f"Exception while processing img{index}_path") from err
+                if str(err).startswith("Face could not be detected"):
+                    raise ValueError(f"Face could not be detected in img{index}_path") from err
+                elif str(err).startswith("Multiple faces are detected"):
+                    raise ValueError(f"Multiple faces are detected in img{index}_path") from err
+                elif str(err).startswith("Spoof detected in given image"):
+                    raise ValueError(f"Spoof detected in img{index}_path") from err
+                else:
+                    raise ValueError(f"Exception while processing img{index}_path") from err
         return img_embeddings, img_facial_areas
 
     img1_embeddings, img1_facial_areas = extract_embeddings_and_facial_areas(img1_path, 1)

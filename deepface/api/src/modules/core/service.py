@@ -56,7 +56,38 @@ def verify(
             enforce_detection=enforce_detection,
             anti_spoofing=anti_spoofing,
         )
+        obj["anti_spoofing"] = anti_spoofing
         return obj
+    except ValueError as verr:
+        errRsp = {
+            "error": f"Exception while verifying: {str(verr)}",
+            "model_name": model_name,
+            "detector_backend": detector_backend,
+            "distance_metric": distance_metric,
+            "anti_spoofing": anti_spoofing,
+        }
+        if str(verr).startswith("Face could not be detected in img1_path"):
+            errRsp["error_vi"] = "Không phát hiện được khuôn mặt trong ảnh 1"
+            return errRsp, 200
+        elif str(verr).startswith("Face could not be detected in img2_path"):
+            errRsp["error_vi"] = "Không phát hiện được khuôn mặt trong ảnh 2"
+            return errRsp, 200
+        elif str(verr).startswith("Multiple faces are detected in img1_path"):
+            errRsp["error_vi"] = "Phát hiện nhiều khuôn mặt trong ảnh 1"
+            return errRsp, 200
+        elif str(verr).startswith("Multiple faces are detected in img2_path"):
+            errRsp["error_vi"] = "Phát hiện nhiều khuôn mặt trong ảnh 2"
+            return errRsp, 200
+        elif str(verr).startswith("Spoof detected in img1_path"):
+            errRsp["error_vi"] = "Phát hiện ảnh giả mạo trong ảnh 1"
+            return errRsp, 200
+        elif str(verr).startswith("Spoof detected in img2_path"):
+            errRsp["error_vi"] = "Phát hiện ảnh giả mạo trong ảnh 2"
+            return errRsp, 200
+
+        tb_str = traceback.format_exc()
+        errRsp["traceback"] = tb_str
+        return errRsp, 400
     except Exception as err:
         tb_str = traceback.format_exc()
         return {"error": f"Exception while verifying: {str(err)} - {tb_str}"}, 400
@@ -82,7 +113,28 @@ def analyze(
             anti_spoofing=anti_spoofing,
         )
         result["results"] = demographies
+        result["anti_spoofing"] = anti_spoofing
+        result["detector_backend"] = detector_backend
         return result
+    except ValueError as verr:
+        errRsp = {
+            "error": f"Exception while verifying: {str(verr)}",
+            "detector_backend": detector_backend,
+            "anti_spoofing": anti_spoofing,
+        }
+        if str(verr).startswith("Face could not be detected"):
+            errRsp["error_vi"] = "Không phát hiện được khuôn mặt"
+            return errRsp, 200
+        elif str(verr).startswith("Multiple faces are detected"):
+            errRsp["error_vi"] = "Phát hiện nhiều khuôn mặt"
+            return errRsp, 200
+        elif str(verr).startswith("Spoof detected in the given image"):
+            errRsp["error_vi"] = "Phát hiện ảnh giả mạo"
+            return errRsp, 200
+
+        tb_str = traceback.format_exc()
+        errRsp["traceback"] = tb_str
+        return errRsp, 400
     except Exception as err:
         tb_str = traceback.format_exc()
         return {"error": f"Exception while analyzing: {str(err)} - {tb_str}"}, 400

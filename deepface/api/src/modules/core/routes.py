@@ -7,6 +7,7 @@ logger = Logger()
 
 blueprint = Blueprint("routes", __name__)
 
+import time
 
 @blueprint.route("/")
 def home():
@@ -54,19 +55,23 @@ def verify():
 
     if img2_path is None:
         return {"message": "you must pass img2_path input"}
+    
+    start = time.time()
 
     verification = service.verify(
         img1_path=img1_path,
         img2_path=img2_path,
-        model_name=input_args.get("model_name", "VGG-Face"),
-        detector_backend=input_args.get("detector_backend", "opencv"),
+        model_name=input_args.get("model_name", "Facenet512"),
+        detector_backend=input_args.get("detector_backend", "fastmtcnn"),
         distance_metric=input_args.get("distance_metric", "cosine"),
         align=input_args.get("align", True),
         enforce_detection=input_args.get("enforce_detection", True),
-        anti_spoofing=input_args.get("anti_spoofing", False),
+        anti_spoofing=input_args.get("anti_spoofing", True),
     )
 
-    logger.debug(verification)
+    stop = time.time()
+
+    logger.debug(f"Verify took {stop - start} seconds return {verification}")
 
     return verification
 
@@ -81,16 +86,20 @@ def analyze():
     img_path = input_args.get("img") or input_args.get("img_path")
     if img_path is None:
         return {"message": "you must pass img_path input"}
+    
+    start = time.time()
 
     demographies = service.analyze(
         img_path=img_path,
         actions=input_args.get("actions", ["age", "gender", "emotion", "race"]),
-        detector_backend=input_args.get("detector_backend", "opencv"),
+        detector_backend=input_args.get("detector_backend", "fastmtcnn"),
         enforce_detection=input_args.get("enforce_detection", True),
         align=input_args.get("align", True),
-        anti_spoofing=input_args.get("anti_spoofing", False),
+        anti_spoofing=input_args.get("anti_spoofing", True),
     )
 
-    logger.debug(demographies)
+    stop = time.time()
+
+    logger.debug(f"Analyze took {stop - start} seconds return {demographies}")
 
     return demographies

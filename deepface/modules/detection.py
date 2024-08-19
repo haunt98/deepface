@@ -172,6 +172,24 @@ def extract_faces(
             "Consider to set enforce_detection arg to False."
         )
 
+    new_resp_objs = []
+    limit_w = 100
+    limit_h = 100
+
+    for resp_obj in resp_objs:
+        logger.info(f"Extract faces {resp_obj['facial_area']} confidence {resp_obj['confidence']}")
+
+        if resp_obj["facial_area"]["w"] < limit_w or resp_obj["facial_area"]["h"] < limit_h:
+            logger.info("Face is too small")
+            continue
+
+        new_resp_objs.append(resp_obj)
+
+    resp_objs = new_resp_objs
+
+    if len(resp_objs) > 1:
+        raise ValueError("Multiple faces are detected")
+
     return resp_objs
 
 
